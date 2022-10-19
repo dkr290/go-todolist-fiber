@@ -5,5 +5,5 @@ import (
 )
 
 var (
-	DBConnect gorm.DB
+	DBConnect *gorm.DB
 )
