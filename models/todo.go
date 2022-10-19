@@ -69,3 +69,15 @@ func UpdateTodo(c *fiber.Ctx) error {
 	return c.Status(400).JSON(&todos)
 
 }
+
+func DeleteTodo(c *fiber.Ctx) error {
+	db := database.DBConnect
+	var todos Todo
+	id := c.Params("id")
+	if err := db.Find(&todos, id).Error; err != nil {
+		return c.Status(400).JSON(err.Error())
+	}
+	db.Delete(&todos)
+
+	return c.SendStatus(200)
+}
