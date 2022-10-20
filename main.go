@@ -9,8 +9,8 @@ import (
 func main() {
 
 	app := fiber.New()
-	handlers.InitDatabase()
 	app.Use(cors.New())
+	handlers.InitDatabase()
 	handlers.SetupRoutes(app)
 	app.Listen("127.0.0.1:8080")
 }
