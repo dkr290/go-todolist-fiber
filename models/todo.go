@@ -1,9 +1,21 @@
 package models
 
 import (
-	"github.com/dkr290/go-todolist-fiber/database"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
+
+type Repository struct {
+	DB *gorm.DB
+}
+
+// creates new repository
+func NewRepo(d *gorm.DB) *Repository {
+	r := Repository{
+		DB: d,
+	}
+	return &r
+}
 
 type Todo struct {
 	ID        uint   `gorm:"primarykey" json:"id"`
@@ -11,15 +23,15 @@ type Todo struct {
 	Completed bool   `json:"completed"`
 }
 
-func GetTodos(c *fiber.Ctx) error {
-	db := database.DBConnect
+func (r *Repository) GetTodos(c *fiber.Ctx) error {
+	db := r.DB
 	var todos []Todo
 	db.Find(&todos)
 	return c.JSON(&todos)
 }
 
-func CreateTodo(c *fiber.Ctx) error {
-	db := database.DBConnect
+func (r *Repository) CreateTodo(c *fiber.Ctx) error {
+	db := r.DB
 	todo := new(Todo)
 	if err := c.BodyParser(todo); err != nil {
 		return c.Status(400).JSON(err.Error())
@@ -31,9 +43,9 @@ func CreateTodo(c *fiber.Ctx) error {
 
 }
 
-func GetTodoById(c *fiber.Ctx) error {
+func (r *Repository) GetTodoById(c *fiber.Ctx) error {
 
-	db := database.DBConnect
+	db := r.DB
 	var todos []Todo
 	id := c.Params("id")
 	if err := db.Find(&todos, id).Error; err != nil {
@@ -44,13 +56,13 @@ func GetTodoById(c *fiber.Ctx) error {
 
 }
 
-func UpdateTodo(c *fiber.Ctx) error {
+func (r *Repository) UpdateTodo(c *fiber.Ctx) error {
 	type UpdatedTodo struct {
 		Title     string `json:"title"`
 		Completed bool   `json:"completed"`
 	}
 
-	db := database.DBConnect
+	db := r.DB
 	var todos Todo
 	id := c.Params("id")
 	if err := db.Find(&todos, id).Error; err != nil {
@@ -70,8 +82,8 @@ func UpdateTodo(c *fiber.Ctx) error {
 
 }
 
-func DeleteTodo(c *fiber.Ctx) error {
-	db := database.DBConnect
+func (r *Repository) DeleteTodo(c *fiber.Ctx) error {
+	db := r.DB
 	var todos Todo
 	id := c.Params("id")
 	if err := db.Find(&todos, id).Error; err != nil {
