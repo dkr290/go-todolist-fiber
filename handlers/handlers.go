@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/dkr290/go-todolist-fiber/models"
+	"github.com/glebarez/sqlite"
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -13,10 +13,24 @@ var DBConnect *gorm.DB
 
 var Repo = models.NewRepo(DBConnect)
 
+// func InitDatabase() {
+// 	var err error
+// 	dsn := "host=172.31.121.144 user=postgres password=Password123 dbname=goTodo port=5432"
+// 	Repo.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+// 	if err != nil {
+// 		panic("Failed to connect to the database")
+// 	}
+
+// 	fmt.Println("Db connects")
+// 	Repo.DB.AutoMigrate(&models.Todo{})
+// 	fmt.Println("Migrated")
+
+// }
+// Another with local database
 func InitDatabase() {
 	var err error
-	dsn := "host=172.31.121.144 user=postgres password=Password123 dbname=goTodo port=5432"
-	Repo.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+
+	Repo.DB, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to the database")
 	}
