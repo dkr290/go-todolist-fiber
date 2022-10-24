@@ -12,5 +12,5 @@ func main() {
 	app.Use(cors.New())
 	handlers.InitDatabase()
 	handlers.SetupRoutes(app)
-	app.Listen("127.0.0.1:8080")
+	app.Listen("127.0.0.1:8001")
 }
