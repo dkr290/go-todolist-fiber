@@ -6,7 +6,12 @@ import (
 )
 
 type Repository struct {
-	DB *gorm.DB
+	DB     *gorm.DB
+	DbHost string
+	DbUser string
+	DbPass string
+	DbPort string
+	DbName string
 }
 
 // creates new repository
