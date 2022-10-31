@@ -49,7 +49,7 @@ jobs:
      
       - name: check golang version
         if: always()
-        run: go -version
+        run: go version
 
     # running nodejs check because of vue 
       - name: check node version
