@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-todo-api
+  namespace: todolist
+  labels:
+      app: go-todo-api
+spec:
+  # The replica count is kept to one for simplicity purposes.
+  # To create a highly available app, the replica count would
+  # be higher.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-todo-api
+  template:
+    metadata:
+      labels:
+        app: go-todo-api
+    spec:
+      containers:
+        - name: go-todo-api
+          # The docker image is pulled from dockerhub.
+          image: ghcr.io/dkr290/go-todolist-fiber/go-todo-api:${COMMIT}
+          imagePullPolicy: Always
+          env: # we extract the values we set in the configmap and mount them as environmen variables in the pods.
+          - name: DATABASE_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: dbhost
+                key: DATABASE_HOST
+           
+          - name: DATABASE_USER
+            valueFrom:
+              secretKeyRef:
+                name: dbuserpass
+                key: DATABASE_USER
+          - name: DATABASE_PASS
+            valueFrom:
+              secretKeyRef:
+                name: dbuserpass
+                key: DATABASE_PASS
+          resources:
+            limits:
+              memory: "3Gi"
+              cpu: "2"
+            requests:
+              memory: 512Mi
+              cpu: "0.5"
+      imagePullSecrets:
+      - name: ghcr-cred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: todo-api
+  name: todo-api
+  namespace: todolist
+spec:
+  ports:
+  - port: 8001
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    app: go-todo-api
