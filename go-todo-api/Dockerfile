@@ -2,6 +2,7 @@ FROM golang:1.19.2-alpine3.15 as builder
 
 WORKDIR /build
 COPY go.mod go.sum ./
+run ls -l
 RUN go mod download && go mod tidy
 COPY . .
 RUN go build -o todo-api .
