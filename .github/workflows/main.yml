@@ -6,11 +6,11 @@ name: go-todo-app
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   #  paths-ignore:
   #    - '.github/**'v
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
   workflow_call:
     outputs:
