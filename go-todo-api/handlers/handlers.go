@@ -16,11 +16,11 @@ var Repo = models.NewRepo(DBConnect)
 
 func InitDatabase() {
 
-	Repo.DbHost = os.Getenv("dbhost")
-	Repo.DbPass = os.Getenv("dbpass")
-	Repo.DbUser = os.Getenv("dbuser")
-	Repo.DbPort = "5432"
-	Repo.DbName = "goTodo"
+	Repo.DbHost = os.Getenv("DATABASE_HOST")
+	Repo.DbPass = os.Getenv("DATABASE_PASS")
+	Repo.DbUser = os.Getenv("DATABASE_USER")
+	Repo.DbPort = os.Getenv("DATABASE_PORT")
+	Repo.DbName = os.Getenv("DB_NAME")
 	var err error
 
 	dsn := "host=" + Repo.DbHost + "user=" + Repo.DbUser + "password=" + Repo.DbPass + "dbname=" + Repo.DbName + "port=" + Repo.DbPort
