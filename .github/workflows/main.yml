@@ -68,6 +68,21 @@ jobs:
             cd postgresql
             docker build . -f Dockerfile -t $POSTGRES_DOCKER_IMAGE
 
+      - if: github.event_name != 'pull_request'
+        name: docker login and push all the images
+        id: push-image
+        run: |
+          echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          VERSION=${GITHUB_SHA::8}
+          echo GOTODOAPI_DOCKER_IMAGE=$GOTODOAPI_DOCKER_IMAGE
+          echo VERSION=$VERSION
+          docker tag $GOTODOAPI_DOCKER_IMAGE $GOTODOAPI_DOCKER_IMAGE:$VERSION 
+          docker push $GOTODOAPI_DOCKER_IMAGE:$VERSION
+          docker push $GOTODOAPI_DOCKER_IMAGE
+          docker tag $POSTGRES_DOCKER_IMAGE $POSTGRES_DOCKER_IMAGE:$VERSION 
+          docker push $POSTGRES_DOCKER_IMAGE:$VERSION
+          docker push $POSTGRES_DOCKER_IMAGE
+          echo "::set-output name=commit::$VERSION"
       #       docker images -a
       # - name: docker login and push
       #   run: | 
