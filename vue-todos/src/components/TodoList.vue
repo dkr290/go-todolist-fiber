@@ -97,14 +97,14 @@
    
     
        async loadTodos(){
-        const response = await this.axios.get(`http://localhost:8001/api/get_todos`)
+        const response = await this.axios.get(`http://todo-api:8001/api/get_todos`)
         this.todos = response.data;
         
        }
 
         async createTodo(todo: any){
             console.log("Todo",todo)
-            await this.axios.post(`http://localhost:8001/api/create_todos`,{
+            await this.axios.post(`http://todo-api:8001/api/create_todos`,{
                 title: todo.title,
                 completed: todo.complated
             });
@@ -117,7 +117,7 @@
         async updateTodo(todo: Todo) {
             console.log("Todo",todo)
 
-            await this.axios.put(`http://localhost:8001/api/update_todos/${todo.id}`,{
+            await this.axios.put(`http://todo-api:8001/api/update_todos/${todo.id}`,{
                 id: todo.id,
                 title: todo.title,
                 completed: todo.completed
@@ -131,7 +131,7 @@
 
         async handleDelete(todo: Todo){
 
-            await this.axios.delete(`http://localhost:8001/api/delete_todos/${todo.id}`);
+            await this.axios.delete(`http://todo-api:8001/api/delete_todos/${todo.id}`);
 
             ElMessage({
                 message: "Todo Deleted",
