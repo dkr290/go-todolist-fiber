@@ -1,13 +1,5 @@
 FROM golang:1.19.2-alpine3.15 as builder
 
-ARG dbhost
-ARG dbuser
-ARG dbpass
-ARG dbport = "5432"
-ARG dbname = "goTodo"
-
-
-
 WORKDIR /build
 COPY go.mod go.sum ./
 RUN go mod download && go mod tidy
@@ -16,6 +8,11 @@ RUN go build -o todo-api .
 
 
 # Input parameters for the Dockerfile expected in os.Getenv
+ARG dbhost="postgres"
+ARG dbuser="postgres"
+ARG dbpass="pass"
+ARG dbport = "5432"
+ARG dbname = "goTodo"
 ENV DATABASE_HOST=$dbhost
 ENV DATABASE_USER=$dbuser
 ENV DATABASE_PASS=$dbpass
