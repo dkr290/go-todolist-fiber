@@ -105,8 +105,8 @@ jobs:
         uses: azure/aks-set-context@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          resource-group: aks-rg-dev
-          cluster-name: aks-cluster-dev
+          resource-group: aks-rg
+          cluster-name: aks-dev-dev
         id: login 
 
       - name: Create namespace
