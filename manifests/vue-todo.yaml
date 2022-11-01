@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vue-todo
+  namespace: todolist
+  labels:
+      app: vue-todo
+spec:
+  # The replica count is kept to one for simplicity purposes.
+  # To create a highly available app, the replica count would
+  # be higher.
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vue-todo
+  template:
+    metadata:
+      labels:
+        app: vue-todo
+    spec:
+      containers:
+        - name: vue-todo
+          # The docker image is pulled from dockerhub.
+          image: ghcr.io/dkr290/go-todolist-fiber/vue-todos:latest
+          imagePullPolicy: Always
+          
+          resources:
+            limits:
+              memory: "3Gi"
+              cpu: "2"
+            requests:
+              memory: 512Mi
+              cpu: "0.5"
+      imagePullSecrets:
+      - name: ghcr-cred
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: vue-todo-lb
+  name: vue-todo-lb
+  namespace: todolist
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: vue-todo
+  type: LoadBalancer
