@@ -129,6 +129,7 @@ jobs:
         with:
           namespace: 'todolist'
           manifests: |
+                manifests/postgres.yaml
                 manifests/go-todo-api.yaml
           strategy: basic
           action: deploy
