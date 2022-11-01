@@ -20,6 +20,7 @@ on:
 env:
   GOTODOAPI_DOCKER_IMAGE: ghcr.io/${{ github.repository }}/go-todo-api
   POSTGRES_DOCKER_IMAGE: ghcr.io/${{ github.repository }}/postgres
+  ALPINE_IMAGE: ghcr.io/${{ github.repository }}/alpine
   VUETODO_DOCKER_IMAGE: ghcr.io/${{ github.repository }}/vue-todos
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -66,6 +67,7 @@ jobs:
         run: |
             cd postgresql
             docker build . -f Dockerfile -t $POSTGRES_DOCKER_IMAGE
+            docker build . -f Dockerfile_alpine -t $ALPINE_IMAGE 
       - name: Build vue-todos
         run: |
             cd vue-todos
@@ -85,6 +87,9 @@ jobs:
           docker tag $POSTGRES_DOCKER_IMAGE $POSTGRES_DOCKER_IMAGE:$VERSION 
           docker push $POSTGRES_DOCKER_IMAGE:$VERSION
           docker push $POSTGRES_DOCKER_IMAGE
+          docker tag $ALPINE_IMAGE $ALPINE_IMAGE:$VERSION 
+          docker push $ALPINE_IMAGE:$VERSION
+          docker push $ALPINE_IMAGE
           docker tag $VUETODO_DOCKER_IMAGE $VUETODO_DOCKER_IMAGE:$VERSION 
           docker push $VUETODO_DOCKER_IMAGE:$VERSION
           docker push $VUETODO_DOCKER_IMAGE
