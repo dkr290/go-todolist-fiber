@@ -23,7 +23,7 @@ func InitDatabase() {
 	Repo.DbName = os.Getenv("DB_NAME")
 	var err error
 
-	dsn := "host=" + Repo.DbHost + "user=" + Repo.DbUser + "password=" + Repo.DbPass + "dbname=" + Repo.DbName + "port=" + Repo.DbPort
+	dsn := "host=" + Repo.DbHost + " " + "user=" + Repo.DbUser + " " + "password=" + Repo.DbPass + " " + "dbname=" + Repo.DbName + " " + "port=" + Repo.DbPort
 	Repo.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("Failed to connect to the database")
