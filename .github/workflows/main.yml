@@ -24,75 +24,75 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build-docker-images:
+  # build-docker-images:
 
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #     - uses: actions/checkout@v3
 
-      - name: Azure login
-        uses: azure/actions/login@v1
-        with: # Set Azure credentials secret as an input
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+  #     - name: Azure login
+  #       uses: azure/actions/login@v1
+  #       with: # Set Azure credentials secret as an input
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: RUN az Command
-        run : |
-           az account show
-           az group list 
+  #     - name: RUN az Command
+  #       run : |
+  #          az account show
+  #          az group list 
      
      
-      - name: check golang version
-        if: always()
-        run: go version
+  #     - name: check golang version
+  #       if: always()
+  #       run: go version
 
-    # running nodejs check because of vue 
-      - name: check node version
-        run: node -v
+  #   # running nodejs check because of vue 
+  #     - name: check node version
+  #       run: node -v
      
-      - name: docker version and prune
-        run: |
-            docker -v
-            docker image prune -a -f
-            docker container prune -f
+  #     - name: docker version and prune
+  #       run: |
+  #           docker -v
+  #           docker image prune -a -f
+  #           docker container prune -f
 
-      - name: Build go-todo-api
-        run: |
-            cd go-todo-api
-            docker build . -f Dockerfile -t $GOTODOAPI_DOCKER_IMAGE
-      - name: Build Postgresql
-        run: |
-            cd postgresql
-            docker build . -f Dockerfile -t $POSTGRES_DOCKER_IMAGE
-      - name: Build vue-todos
-        run: |
-            cd vue-todos
-            docker build . -f Dockerfile -t $VUETODO_DOCKER_IMAGE
+  #     - name: Build go-todo-api
+  #       run: |
+  #           cd go-todo-api
+  #           docker build . -f Dockerfile -t $GOTODOAPI_DOCKER_IMAGE
+  #     - name: Build Postgresql
+  #       run: |
+  #           cd postgresql
+  #           docker build . -f Dockerfile -t $POSTGRES_DOCKER_IMAGE
+  #     - name: Build vue-todos
+  #       run: |
+  #           cd vue-todos
+  #           docker build . -f Dockerfile -t $VUETODO_DOCKER_IMAGE
 
-      - if: github.event_name != 'pull_request'
-        name: docker login and push all the images
-        id: push-image
-        run: |
-          echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          VERSION=${GITHUB_SHA::8}
-          echo GOTODOAPI_DOCKER_IMAGE=$GOTODOAPI_DOCKER_IMAGE
-          echo VERSION=$VERSION
-          docker tag $GOTODOAPI_DOCKER_IMAGE $GOTODOAPI_DOCKER_IMAGE:$VERSION 
-          docker push $GOTODOAPI_DOCKER_IMAGE:$VERSION
-          docker push $GOTODOAPI_DOCKER_IMAGE
-          docker tag $POSTGRES_DOCKER_IMAGE $POSTGRES_DOCKER_IMAGE:$VERSION 
-          docker push $POSTGRES_DOCKER_IMAGE:$VERSION
-          docker push $POSTGRES_DOCKER_IMAGE
-          docker tag $VUETODO_DOCKER_IMAGE $VUETODO_DOCKER_IMAGE:$VERSION 
-          docker push $VUETODO_DOCKER_IMAGE:$VERSION
-          docker push $VUETODO_DOCKER_IMAGE
+  #     - if: github.event_name != 'pull_request'
+  #       name: docker login and push all the images
+  #       id: push-image
+  #       run: |
+  #         echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+  #         VERSION=${GITHUB_SHA::8}
+  #         echo GOTODOAPI_DOCKER_IMAGE=$GOTODOAPI_DOCKER_IMAGE
+  #         echo VERSION=$VERSION
+  #         docker tag $GOTODOAPI_DOCKER_IMAGE $GOTODOAPI_DOCKER_IMAGE:$VERSION 
+  #         docker push $GOTODOAPI_DOCKER_IMAGE:$VERSION
+  #         docker push $GOTODOAPI_DOCKER_IMAGE
+  #         docker tag $POSTGRES_DOCKER_IMAGE $POSTGRES_DOCKER_IMAGE:$VERSION 
+  #         docker push $POSTGRES_DOCKER_IMAGE:$VERSION
+  #         docker push $POSTGRES_DOCKER_IMAGE
+  #         docker tag $VUETODO_DOCKER_IMAGE $VUETODO_DOCKER_IMAGE:$VERSION 
+  #         docker push $VUETODO_DOCKER_IMAGE:$VERSION
+  #         docker push $VUETODO_DOCKER_IMAGE
          
-      - name: listt docker images 
-        run: |
-           docker images -a
+  #     - name: listt docker images 
+  #       run: |
+  #          docker images -a
   deploy-to-aks-dev:
     needs: build-docker-images
     # The type of runner that the job will run on
