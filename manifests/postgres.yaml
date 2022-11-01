@@ -2,7 +2,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: disk-sc
-provisioner: managed-csi-premium
+provisioner: disk.csi.azure.com
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true 
 reclaimPolicy: Delete
