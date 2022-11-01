@@ -56,9 +56,11 @@ jobs:
       - name: check node version
         run: node -v
      
-      - name: docker version
+      - name: docker version and prune
         run: |
             docker -v
+            docker image prune -a -f
+            docker container prune -f
 
       - name: Build go-todo-api
         run: |
