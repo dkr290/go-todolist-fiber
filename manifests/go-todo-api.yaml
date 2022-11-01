@@ -40,6 +40,10 @@ spec:
               secretKeyRef:
                 name: dbuserpass
                 key: DATABASE_PASS
+          - name: DB_NAME
+            value: goTodo
+          - name: DATABASE_PORT
+            value: "5432"
           resources:
             limits:
               memory: "3Gi"

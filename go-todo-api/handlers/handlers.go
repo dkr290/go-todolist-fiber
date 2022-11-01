@@ -22,7 +22,7 @@ func InitDatabase() {
 	Repo.DbPort = os.Getenv("DATABASE_PORT")
 	Repo.DbName = os.Getenv("DB_NAME")
 	var err error
-
+	fmt.Printf("Host: %s, NAME: %s, USER: %s, PORT:%s,PASS: %s", Repo.DbHost, Repo.DbName, Repo.DbUser, Repo.DbPort, Repo.DbPass)
 	dsn := "host=" + Repo.DbHost + " " + "user=" + Repo.DbUser + " " + "password=" + Repo.DbPass + " " + "dbname=" + Repo.DbName + " " + "port=" + Repo.DbPort
 	Repo.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
