@@ -23,21 +23,20 @@ env:
   VUETODO_DOCKER_IMAGE: ghcr.io/${{ github.repository }}/vue-todos
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  # build-docker-images:
+  build-docker-images:
 
-  #   # The type of runner that the job will run on
-  #   runs-on: ubuntu-latest
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
 
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v3
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
 
-  #     - name: Azure login
-  #       uses: azure/actions/login@v1
-  #       with: # Set Azure credentials secret as an input
-  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Azure login
+        uses: azure/actions/login@v1
+        with: # Set Azure credentials secret as an input
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
   #     - name: RUN az Command
   #       run : |
@@ -93,34 +92,34 @@ jobs:
   #     - name: listt docker images 
   #       run: |
   #          docker images -a
-  deploy-to-aks-dev:
-    needs: build-docker-images
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+  # deploy-to-aks-dev:
+  #   needs: build-docker-images
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps: 
-      - uses: actions/checkout@v3
-      - name: Get K8s context
-        uses: azure/aks-set-context@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-          resource-group: aks-rg
-          cluster-name: aks-dev-dev
-        id: login 
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps: 
+  #     - uses: actions/checkout@v3
+  #     - name: Get K8s context
+  #       uses: azure/aks-set-context@v1
+  #       with:
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
+  #         resource-group: aks-rg
+  #         cluster-name: aks-dev-dev
+  #       id: login 
 
-      - name: Create namespace
-        run: |
-          kubectl apply -f manifests/namespace.yaml
+  #     - name: Create namespace
+  #       run: |
+  #         kubectl apply -f manifests/namespace.yaml
 
-      - name: Create configmaps and secrets
-        shell: bash
-        continue-on-error: true
-        run: |
+  #     - name: Create configmaps and secrets
+  #       shell: bash
+  #       continue-on-error: true
+  #       run: |
         
-          kubectl create configmap dbhost --from-literal=DATABASE_HOST=${{ secrets.DATABASE_HOST }} -n todolist --dry-run=client -o yaml | kubectl apply -f -
-          kubectl create secret generic dbuserpass --from-literal=DATABASE_USER=${{ secrets.DATABASE_USER }} --from-literal=DATABASE_PASS=${{ secrets.DATABASE_PASS }} -n todolist --dry-run=client -o yaml | kubectl apply -f -
-          kubectl create secret  docker-registry ghcr-cred --docker-username=${{ secrets.DOCKER_USER }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=${{ secrets.DOCKER_EMAIL}} -n todolist --dry-run=client -o yaml | kubectl apply -f -  
+  #         kubectl create configmap dbhost --from-literal=DATABASE_HOST=${{ secrets.DATABASE_HOST }} -n todolist --dry-run=client -o yaml | kubectl apply -f -
+  #         kubectl create secret generic dbuserpass --from-literal=DATABASE_USER=${{ secrets.DATABASE_USER }} --from-literal=DATABASE_PASS=${{ secrets.DATABASE_PASS }} -n todolist --dry-run=client -o yaml | kubectl apply -f -
+  #         kubectl create secret  docker-registry ghcr-cred --docker-username=${{ secrets.DOCKER_USER }} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=${{ secrets.DOCKER_EMAIL}} -n todolist --dry-run=client -o yaml | kubectl apply -f -  
   
       # - uses: Azure/k8s-deploy@v4
       #   with:
