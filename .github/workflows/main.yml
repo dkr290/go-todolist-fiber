@@ -3,12 +3,11 @@ name: go-todo-app
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   #  paths-ignore:
-  #    - '.github/**'v
+  #    - '.github/**'
   pull_request:
-    branches: [ "master" ]
-
+    branches: [ "main" ]
   workflow_call:
     outputs:
       commit: 
@@ -17,6 +16,7 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
 env:
   GOTODOAPI_DOCKER_IMAGE: ghcr.io/${{ github.repository }}/go-todo-api
   POSTGRES_DOCKER_IMAGE: ghcr.io/${{ github.repository }}/postgres
