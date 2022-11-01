@@ -1,0 +1,105 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: disk-sc
+provisioner: managed-csi-premium
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true 
+reclaimPolicy: Delete
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-data
+  namespace: todolist
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: disk-sc
+  resources:
+    requests:
+      storage: 8Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: todolist-postgresql
+    
+  name: todolist-postgresql
+  namespace: todolist
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todolist-postgresql
+      
+  template:
+    metadata:
+      labels:
+        app: todolist-postgresql
+        
+    spec:
+      initContainers:
+      - name: take-data-dir-ownership
+        image:  alpine:3.16.2
+        command: ['sh', '-c','chmod 777 /bitnami/postgresql' ]
+
+        
+        volumeMounts:
+        - name: postgresql-data
+          mountPath: "/bitnami/postgresql"
+     
+      containers:
+      - image: ghcr.io/dkr290/go-todolist-fiber/postgres:${COMMIT}
+        name: postgresql
+       
+        env:
+
+        - name: POSTGRESQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dbuserpass
+              key: DATABASE_USER
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dbuserpass
+              key: DATABASE_PASS
+     
+        - name: POSTGRESQL_DATABASE
+          value: goTodo
+            
+        resources:
+          limits:
+            memory: "8Gi"
+            cpu: "4"
+          requests:
+            memory: 1024Mi
+            cpu: "0.5"
+        volumeMounts:
+        - name: postgresql-data
+          mountPath: "/bitnami/postgresql"
+     
+      restartPolicy: Always
+      volumes:
+      - name: postgresql-data
+        persistentVolumeClaim:
+          claimName: "postgresql-data"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todolist-postgresql
+  namespace: todolist
+  labels:
+    mlflow: todolist-psql-service
+spec:
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  type: ClusterIP
+  selector:
+    app: todolist-postgresql

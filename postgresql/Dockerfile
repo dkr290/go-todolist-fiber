@@ -1,1 +1,1 @@
-FROM postgres:15.0
+FROM bitnami/postgresql:latest
