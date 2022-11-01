@@ -28,6 +28,7 @@ env:
 jobs:
   # This workflow contains a single job called "build"
   build-docker-images:
+
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -93,14 +94,19 @@ jobs:
       - name: listt docker images 
         run: |
            docker images -a
-   
-      # - name: Get K8s context
-      #   uses: azure/aks-set-context@v1
-      #   with:
-      #     creds: ${{ secrets.AZURE_CREDENTIALS }}
-      #     resource-group: aks-rg-dev
-      #     cluster-name: aks-cluster-dev
-      #   id: login 
+  deploy-to-aks-dev:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps: 
+      - name: Get K8s context
+        uses: azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resource-group: aks-rg-dev
+          cluster-name: aks-cluster-dev
+        id: login 
 
       - name: Create namespace
         run: |
