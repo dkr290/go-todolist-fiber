@@ -9,14 +9,9 @@ RUN go build -o todo-api .
 
 
 # Input parameters for the Dockerfile expected in os.Getenv
-ARG dbhost
-ARG dbuser
-ARG dbpass
+
 ARG dbport="5432"
 ARG dbname="goTodo"
-ENV DATABASE_HOST=$dbhost
-ENV DATABASE_USER=$dbuser
-ENV DATABASE_PASS=$dbpass
 ENV DATABASE_PORT=$dbport
 ENV DB_NAME=$dbname
 
