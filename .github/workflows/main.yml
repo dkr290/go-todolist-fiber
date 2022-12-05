@@ -33,10 +33,12 @@ jobs:
     steps:
       - name: Run OPA Conftest
         run: |
-          docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego -f Dockerfile --all-namespaces
+          docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego  Dockerfile
 
 
   build-docker-images:
+
+    needs: run-vulnerability-scan
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
