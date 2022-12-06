@@ -32,7 +32,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
-
+      - name: run npm install for vue.js
+        run: |
+          cd vue-todos
+          npm install
       - name: Depcheck
         uses: dependency-check/Dependency-Check_Action@main
         id: Depcheck
